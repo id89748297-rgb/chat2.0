@@ -264,9 +264,8 @@ let __vvMaxH = 0; // запоминаем высоту экрана БЕЗ кл�
 let __kbOpen = false;
 let __kbRaf = 0;
 function adjustChatForKeyboard() {
-// Во время анимации клавиатуры события resize/scroll летят десятками подряд.
-// Складываем их в один кадр: пересчёт высоты выполняется один раз на кадр,
-// а не на каждое событие — без «ступенек».
+// События resize/scroll во время анимации клавиатуры складываем в один кадр —
+// без этого страница перестраивается «ступеньками» много раз подряд.
 if (__kbRaf) return;
 __kbRaf = requestAnimationFrame(() => {
 __kbRaf = 0;
@@ -279,9 +278,13 @@ const kb = __vvMaxH > 0 ? (__vvMaxH - vh) : 0;
 if (kb > 150) {
 __kbOpen = true;
 try { localStorage.setItem('clc_kb_height_v2', String(kb)); } catch {}
-// Шапку НЕ смещаем: top остаётся 0 всегда, сжимается только высота страницы (список).
+// Страница прилипает к ВИДИМОЙ части экрана: top = насколько браузер
+// спанорамировал экран при показе клавиатуры, height = видимой высоте.
+// Шапка всегда стоит у верхнего края видимой зоны и никуда не убегает.
+// window.scrollTo(0, 0) здесь СПЕЦИАЛЬНО нет: именно он спорил с панорамой
+// и устраивал шапке «приседание».
 page.style.setProperty('height', vh + 'px', 'important');
-window.scrollTo(0, 0);
+page.style.setProperty('top', Math.round(vv.offsetTop) + 'px', 'important');
 } else {
 __kbOpen = false;
 page.style.removeProperty('height');
