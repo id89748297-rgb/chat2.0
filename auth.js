@@ -4,7 +4,6 @@ let currentUser = null;
 // Заглушки функций профиля (в песочнице нет страницы профиля — не мешают)
 function loadUserAvatar() {}
 function resetAvatarsInUI() {}
-
 auth.onAuthStateChanged(async (user) => {
     const authPage = document.getElementById('page-auth');
     const homePage = document.getElementById('page-home');
@@ -105,8 +104,8 @@ async function loginWithEmail() {
 // Регистрация
 async function registerWithEmail() {
 const name = document.getElementById('register-name').value.trim();
-const email = document.getElementById('login-email').value.trim();
-const password = document.getElementById('login-password').value;
+const email = document.getElementById('reg-email').value.trim();
+const password = document.getElementById('reg-password').value;
 if (!name) {
 showAuthError('Введите имя');
 return;
@@ -191,19 +190,6 @@ function getAuthErrorMessage(code) {
     'auth/invalid-credential': 'Неверные учетные данные'
   };
   return messages[code] || 'Ошибка авторизации';
-}
-
-// Показ поля «Имя» при регистрации
-function showRegisterForm() {
-  const nameField = document.getElementById('register-name');
-  if (nameField.style.display === 'none') {
-    nameField.style.display = 'block';
-    nameField.focus();
-    return;
-  }
-  if (confirm('Создать новый аккаунт?')) {
-    registerWithEmail();
-  }
 }
 
 // === СЕССИИ (УСТРОЙСТВА) ===
