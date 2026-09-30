@@ -262,7 +262,14 @@ window.visualViewport.addEventListener('scroll', adjustChatForKeyboard);
 let __chatKBLast = -1;
 let __vvMaxH = 0; // запоминаем высоту экрана БЕЗ клавиатуры
 let __kbOpen = false;
+let __kbRaf = 0;
 function adjustChatForKeyboard() {
+// Во время анимации клавиатуры события resize/scroll летят десятками подряд.
+// Складываем их в один кадр: пересчёт высоты выполняется один раз на кадр,
+// а не на каждое событие — без «ступенек».
+if (__kbRaf) return;
+__kbRaf = requestAnimationFrame(() => {
+__kbRaf = 0;
 const page = document.getElementById('page-team-chat');
 if (!page || !page.classList.contains('active') || !window.visualViewport) return;
 const vv = window.visualViewport;
@@ -273,9 +280,6 @@ if (kb > 150) {
 __kbOpen = true;
 try { localStorage.setItem('clc_kb_height_v2', String(kb)); } catch {}
 // Шапку НЕ смещаем: top остаётся 0 всегда, сжимается только высота страницы (список).
-// Установка top по vv.offsetTop давала «приседание» шапки: в момент открытия клавиатуры
-// браузер на миг прокручивает документ, offsetTop становится ненулевым — шапка
-// опускалась, а при сбросе прокрутки вскакивала обратно.
 page.style.setProperty('height', vh + 'px', 'important');
 window.scrollTo(0, 0);
 } else {
@@ -284,6 +288,7 @@ page.style.removeProperty('height');
 page.style.removeProperty('top');
 }
 if (kb !== __chatKBLast) { __chatKBLast = kb; scrollChatToBottom(); }
+});
 }
 function autoGrowChatInput(el) {
 el.style.setProperty('height', 'auto', 'important');
