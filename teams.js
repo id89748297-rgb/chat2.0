@@ -194,43 +194,12 @@ const chatActive = () => {
 const page = document.getElementById('page-team-chat');
 return !!(page && page.classList.contains('active'));
 };
-// Сжатие страницы под клавиатуру в момент касания — ДО того, как iOS решит прокручивать
-const preshrink = () => {
-if (!chatActive() || __vvMaxH <= 0) return;
-let lastKb = parseInt(localStorage.getItem('clc_kb_height_v2') || '0');
-if (!lastKb || lastKb < 100 || lastKb > __vvMaxH * 0.7) lastKb = Math.round(__vvMaxH * 0.42);
-const page = document.getElementById('page-team-chat');
-page.style.setProperty('height', (__vvMaxH - lastKb) + 'px', 'important');
-setTimeout(() => {
-if (chatActive() && !__kbOpen && document.activeElement !== input) {
-page.style.removeProperty('height');
-page.style.removeProperty('top');
-}
-}, 800);
-};
-['pointerdown', 'touchstart'].forEach(ev => {
-input.addEventListener(ev, preshrink, { passive: true });
-});
-// Конец тапа: ручной фокус-страховка (без preventDefault — жест «настоящий»)
+// Конец тапа: страховка фокуса на случай, если браузер не дал фокус сам.
+// Никаких scrollTo и «пред-сжатий»: страницу к клавиатуре прижимает
+// adjustChatForKeyboard, и любые принудительные скроллы с ней только спорят.
 input.addEventListener('touchend', () => {
-if (!chatActive()) return;
-window.scrollTo(0, 0);
-input.focus();
+if (chatActive()) input.focus();
 }, false);
-input.addEventListener('focusin', () => {
-if (chatActive()) window.scrollTo(0, 0);
-});
-window.addEventListener('scroll', () => {
-if (chatActive() && window.scrollY !== 0) window.scrollTo(0, 0);
-}, true);
-input.addEventListener('focus', () => {
-[0, 100, 300, 600].forEach(ms => setTimeout(() => {
-if (chatActive()) { window.scrollTo(0, 0); adjustChatForKeyboard(); }
-}, ms));
-});
-input.addEventListener('blur', () => setTimeout(() => {
-if (chatActive()) window.scrollTo(0, 0);
-}, 100));
 }
 function setupChatSwipeBack() {
 if (window.__chatSwipeBackBound) return;
