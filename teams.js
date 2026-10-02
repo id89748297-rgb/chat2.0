@@ -268,6 +268,17 @@ if (__list && (__list.scrollHeight - __list.scrollTop - __list.clientHeight) < 1
 __list.scrollTop = __list.scrollHeight;
 }
 __chatKBLast = kb;
+// «Дожим»: высота страницы докручивается CSS-плавностью ещё 0.2с после того,
+// как события клавиатуры закончились, и прижатие успевает сработать раньше
+// конца анимации — свежие сообщения остаются чуть ниже среза. Повторяем
+// прижатие, когда анимация точно закончилась (260мс после последнего кадра).
+clearTimeout(window.__kbPinTimer);
+window.__kbPinTimer = setTimeout(() => {
+const l = document.getElementById('chat-messages-list');
+if (l && (l.scrollHeight - l.scrollTop - l.clientHeight) < 150) {
+l.scrollTop = l.scrollHeight;
+}
+}, 260);
 });
 }
 function autoGrowChatInput(el) {
