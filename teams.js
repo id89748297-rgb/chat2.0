@@ -232,6 +232,20 @@ let __chatKBLast = -1;
 let __vvMaxH = Math.round(window.innerHeight || 0); // высота экрана БЕЗ клавиатуры — эталон берём сразу при загрузке
 let __kbOpen = false;
 let __kbRaf = 0;
+// === ВРЕМЕННАЯ ДИАГНОСТИКА КЛАВИАТУРЫ: зелёные цифры в левом нижнем углу ===
+// Покажут, что видит код: vvH — видимая высота, off — сдвиг экрана, innerH —
+// высота окна, kb — сработало ли сжатие. После отладки этот блок удалить.
+function __kbDebug(label) {
+let d = document.getElementById('__kb-debug');
+if (!d) {
+d = document.createElement('div');
+d.id = '__kb-debug';
+d.style.cssText = 'position:fixed;left:4px;bottom:4px;z-index:99999;background:rgba(0,0,0,.85);color:#0f0;font:11px monospace;padding:4px 6px;border-radius:6px;pointer-events:none;max-width:95vw;';
+document.body.appendChild(d);
+}
+const vv = window.visualViewport;
+d.textContent = label + ' vvH=' + Math.round(vv.height) + ' off=' + Math.round(vv.offsetTop) + ' innerH=' + window.innerHeight + ' kb=' + __kbOpen;
+}
 function adjustChatForKeyboard() {
 // События resize/scroll во время анимации клавиатуры складываем в один кадр —
 // без этого страница перестраивается «ступеньками» много раз подряд.
@@ -268,6 +282,7 @@ if (__list && (__list.scrollHeight - __list.scrollTop - __list.clientHeight) < 1
 __list.scrollTop = __list.scrollHeight;
 }
 __chatKBLast = kb;
+__kbDebug('vv');
 // «Дожим»: высота страницы докручивается CSS-плавностью ещё 0.2с после того,
 // как события клавиатуры закончились, и прижатие успевает сработать раньше
 // конца анимации — свежие сообщения остаются чуть ниже среза. Повторяем

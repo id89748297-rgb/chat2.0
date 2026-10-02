@@ -625,7 +625,6 @@ body.light .btn-refresh-back-color, body.dark-white .btn-refresh-back-color { ba
   margin: 0; padding: 0;
   background: #121212;
   overflow: hidden; /* оставляем как есть */
-  transition: height 0.2s ease-out;
 }
 body.light #page-team-chat.active { background: #F5F5DC; }
 .chat-page-header {
