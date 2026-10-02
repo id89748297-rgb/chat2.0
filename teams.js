@@ -331,7 +331,7 @@ const teamId = currentChatTeamId;
 const btn = document.getElementById('chat-scroll-down');
 const list = document.getElementById('chat-messages-list');
 if (!btn || !list || !teamId) return;
-const farFromBottom = list.scrollHeight - list.scrollTop - list.clientHeight > 300;
+const farFromBottom = list.scrollHeight - list.clientHeight > 100;
 btn.style.display = farFromBottom ? 'flex' : 'none';
 const badge = document.getElementById('chat-scroll-down-badge');
 if (!farFromBottom || !currentUser) { if (badge) badge.style.display = 'none'; return; }
@@ -340,7 +340,7 @@ if (badge) { badge.textContent = unseen > 0 ? (unseen > 99 ? '99+' : String(unse
 }
 function chatScrollDownClick() {
 const list = document.getElementById('chat-messages-list');
-if (list) list.scrollTo({ top: 0, behavior: 'smooth' });
+if (list) list.scrollTo({ top: list.scrollHeight, behavior: 'smooth' });
 }
 
 // === ЛИСТЕНЕРЫ ЧАТА ===
