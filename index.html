@@ -106,7 +106,7 @@
 </div>
 <div id="chat-pinned-banner" style="display:none;align-items:center;gap:8px;padding:8px 12px;background:rgba(66,165,245,0.1);border-bottom:1px solid rgba(255,255,255,0.08);cursor:pointer;"></div>
 <div id="chat-messages-list" onscroll="handleChatScroll(this)"></div>
-<button id="chat-scroll-down" onclick="chatScrollDownClick()" title="Вниз" style="display:none;">
+<button id="chat-scroll-down" onclick="chatScrollDownClick()" title="Вниз" onpointerdown="event.preventDefault()" onmousedown="event.preventDefault()" style="display:none;">
 <span style="font-size:20px;line-height:1;">▼</span>
 <span id="chat-scroll-down-badge" style="display:none;"></span>
 </button>

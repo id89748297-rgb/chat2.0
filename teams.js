@@ -340,7 +340,7 @@ if (badge) { badge.textContent = unseen > 0 ? (unseen > 99 ? '99+' : String(unse
 }
 function chatScrollDownClick() {
 const list = document.getElementById('chat-messages-list');
-if (list) list.scrollTo({ top: list.scrollHeight, behavior: 'smooth' });
+if (list) list.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 // === ЛИСТЕНЕРЫ ЧАТА ===
