@@ -229,7 +229,7 @@ window.visualViewport.addEventListener('resize', adjustChatForKeyboard);
 window.visualViewport.addEventListener('scroll', adjustChatForKeyboard);
 }
 let __chatKBLast = -1;
-let __vvMaxH = 0; // запоминаем высоту экрана БЕЗ клавиатуры
+let __vvMaxH = Math.round(window.innerHeight || 0); // высота экрана БЕЗ клавиатуры — эталон берём сразу при загрузке
 let __kbOpen = false;
 let __kbRaf = 0;
 function adjustChatForKeyboard() {
@@ -259,7 +259,15 @@ __kbOpen = false;
 page.style.removeProperty('height');
 page.style.removeProperty('top');
 }
-if (kb !== __chatKBLast) { __chatKBLast = kb; scrollChatToBottom(); }
+// Telegram-поведение: если читали низ списка, сообщения «едут» за окном ввода —
+// каждый кадр анимации клавиатуры держим список прижатым к низу. Порог 150px
+// больше кадрового сжатия (~100px), поэтому «прижатость» не срывается посреди
+// анимации. Если пользователь листал историю выше — его позицию не трогаем.
+const __list = document.getElementById('chat-messages-list');
+if (__list && (__list.scrollHeight - __list.scrollTop - __list.clientHeight) < 150) {
+__list.scrollTop = __list.scrollHeight;
+}
+__chatKBLast = kb;
 });
 }
 function autoGrowChatInput(el) {
